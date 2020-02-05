@@ -1,0 +1,14 @@
+legacy-files/
+slides/
+skeleton-tufte/
+skeleton.bib
+.RData
+.Rhistory
+.Rproj.user/
+lecture-notes_cache/
+lecture-notes_files/
+lecture-notes.bib
+lecture-notes.log
+preamble.sty.aux
+r-course-1920.Rproj
+

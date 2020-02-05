@@ -1,0 +1,617 @@
+---
+title: "Introduction to Programming using R"
+output:
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+    number_section: true
+  tufte::tufte_html: default
+bibliography: lecture-notes.bib
+link-citations: yes
+header-includes: 
+  - \include{preamble.sty}
+---
+```{r setup, include=FALSE}
+library(tufte)
+# invalidate cache when the tufte version changes
+knitr::opts_chunk$set(
+  tidy = FALSE, 
+  cache.extra = packageVersion('tufte'),
+  comment=NA)
+options(htmltools.dir.version = FALSE)
+```
+
+# Organizational Matters {-}
+
+*Lecturers:*
+
+- Tim Mensinger (tim.mensinger@uni-bonn.de)
+- Moritz Brinker (s3mobrin@uni-bonn.de)
+- Florian Schoner (florian.schoner@uni-bonn.de)
+
+\noindent
+*Timetable:*
+
+- Monday - Thursday, 9am - 4pm; Friday, 9am - 2pm
+- Morning: Lectures and presenation of solutions
+- Lunchbreak: 12-1pm
+- Afternoon: Supervised learning
+
+# Preliminaries {-}
+
+Before starting the class make sure to install the required software.
+We will be using the programming language R [@R-base] and the development environment RStudio [@RStudio].
+We recommend first installing R and then RStudio (desktop).^[In case you have problems with the installation process press [\textcolor{blue}{here}](http://www.sthda.com/english/wiki/installing-r-and-rstudio-easy-r-programming).]
+
+- R: https://cran.rstudio.com
+- RStudio: https://rstudio.com/products/rstudio/download
+
+
+# Introduction
+
+"[...] computers and mathematics are like beer and potato chips: two fine tastes that are best enjoyed together.
+Mathematics provides the foundations of our models and of the algorithms we use to solve them.
+Computers are the engines that run these algorithms."
+ -- <cite>[@stachurski2009]</cite>
+
+`r tufte::newthought('In this section')` we will present the very basics of R.
+We will go through some arithmetic, variables, special numerical objects, comments and data types.^[All statements are typed into the R console and the results are displayed after `[1]`.]
+
+## Arithmetic
+
+```{r}
+1 + 1
+```
+```{r}
+1 - 1
+```
+\noindent
+Decimals:^[Note that the decimal mark is denoted by a dot (.) and not a comma (,).]
+```{r}
+2.5 * 4
+```
+```{r}
+1 / 3
+```
+```{r}
+2 ^ 2 ^ 3
+```
+```{r}
+2 ** 2 ** 3
+```
+\noindent
+Parentheses:^[If in doubt use parentheses to ensure that R will compute the correct expression.]
+```{r}
+(2 ** 2) ** 3
+```
+
+## Variables
+
+```{r}
+x <- 10 + 5
+x
+```
+```{r}
+x <- x + x
+x
+```
+```{r}
+x ** 2
+```
+
+```{r}
+y <- x
+y
+```
+
+
+## Special Numerical Objects
+
+Constants, infinity and NaNs (Not a Number):
+```{r}
+pi
+```
+```{r}
+1/0
+```
+```{r}
+0/0
+```
+
+## Data Types
+
+- `numeric`: `x <- 1.25`
+- `integer`: `x <- 1L`
+- `character`: `x <- "this_works"`^[In other programming languages this data type is known as a \emph{String}.]
+- `logical`: `x <- TRUE`, `y <- FALSE`
+- `complex`: `x <- 1 + 2i`
+
+# Data Structures
+
+In this section we consider the most common data structures used in R.
+This includes
+
+- `list`
+- `(atomic) vector`
+- `matrix`
+- `data.frame`
+
+## Lists
+
+Lists are objects which can contain different objects of different data types.^[`list` is a (built-in) function which takes as argument multiple objects and combines them to a list. See section function.`print` is a (built-in) function which prints its argument on the console.]
+```{r}
+x <- list(1, 1.25, "this works?")
+print(x)
+x <- list(x, 1 + 2i)
+print(x)
+```
+```{r}
+length(x)
+```
+
+## Vectors
+
+Vectors are similar to lists in that they can contain multiple objects, however, any vector can contain only objects of one data type.^[`c` is a (built-in) function which takes as argument multiple objects of the same data type and combines them to a vector. `c` stands for `combine`.]
+```{r}
+x <- c(1, 2, 3)
+print(x)
+x <- c("this", "actually", "works")
+print(x)
+x <- c("wait?", 1)
+print(x)
+```
+```{r}
+length(x)
+```
+
+## Indexing of Lists and Vectors
+
+We access elements of lists and vectors via their index.
+If `x` is a list (or vector) we get the `i`-th element as `x[i]`.^[This is slightly different to many other programming languages which start indexing at `0` instead of `1`.]
+Note that for a list (or vector) of length `n` we can of course only ask for elements `1` to `n`, otherwise R returns `NA` which stands for Not Available.
+If we supply a vector of indices we can access more than one element, i.e.
+`x[c(1, 3, 5)]` will return the first, third and fifth element of `x`.
+
+\noindent
+Examples:
+```{r}
+x <- c(2, 4, 6, 8, 10)
+print(x[1])
+print(x[2])
+print(x[6])
+
+x[6] <- 0
+print(x)
+
+print(x[c(1, 3, 5)])
+
+x[3] <- 100
+print(x)
+
+x[c(2, 4)] <- -100
+print(x)
+
+print(x[-1])
+print(x[-c(1, 2)])
+
+```
+
+\noindent
+Useful commands:
+```{r}
+x <- 1:10
+print(x)
+
+x <- seq(from=1, to=10, by=2)
+print(x)
+
+x <- seq(from=0, to=1, length.out=20)
+print(x)
+```
+
+## Calculating with Vectors
+
+```{r}
+x <- 1:10
+print(x)
+y <- -4:5
+print(y)
+
+print(x + y)
+print(x * y)
+print(x ** y)
+
+print(2 * x)
+print(10 + x)
+print(x ** 2)
+```
+
+\noindent
+Recycling:
+```{r}
+x <- 1:4
+y <- c(1, 5, 10)
+
+print(x + y)
+```
+
+\noindent
+(Some) useful functions:^[`sum` is a (built-in) function which sums all elements of its argument (also works on matrices). `mean` computes the mean of its argument, `sd` the (unbiased) standard deviation, `var` the variance and `cumsum` the cumulative sum.]
+```{r}
+x <- -5:5
+print(x)
+
+print(sum(x))
+print(mean(x))
+print(sd(x))
+print(var(x))
+print(cumsum(x))
+```
+
+## Matrices
+
+Matrices represent two dimensional arrays which works similar to vectors in that matrices can only contain objects of a single data type.
+To create a matrix we need to know how many rows and columns it should have and what data it should contain.^[Note that `1:x` is equivalent to `c(1,2,...,x)`. Also note `matrix(data, rows, cols)` is not equal to `matrix(data, cols, rows)`; if you do not know which argument comes when, simply ask R for help: `?matrix`.]
+```{r}
+data <- 1:9
+rows <- 3
+cols <- 3
+
+x <- matrix(data, rows, cols)
+print(x)
+y <- matrix(data, rows, cols, byrow=TRUE)
+print(y)
+```
+```{r}
+dim(x)
+```
+```{r}
+nrow(x)
+```
+```{r}
+ncol(x)
+```
+
+## Combining Vectors and Matrices
+
+```{r}
+x <- matrix(1:9, 3)
+print(x)
+y <- matrix(1:6, 2)
+print(y)
+
+z <- rbind(x, y)
+print(z)
+
+x <- cbind(1:3, 4:6)
+print(x)
+```
+
+\noindent
+(Some) useful functions:^[Explain them here formally.]
+```{r}
+m <- matrix(1:9, 3)
+print(m)
+
+print(rowSums(m))
+print(colSums(m))
+print(rowMeans(m))
+```
+
+In more general settings we might wish to apply an arbitrary function to the rows or columns of a matrix. We can do this with the function `apply`.^[`apply(X, MARGIN, FUN)`, `X` = matrix of interest, `MARGIN` = 1 to apply the function over the rows and 2 to apply the function over the columns, `FUN` = the function of interest.]
+Example:
+
+```{r}
+m <- matrix(1:9, 3)
+
+print(apply(m, 1, sd))
+print(apply(m, 2, sd))
+```
+
+
+## Matrix algebra
+
+```{r}
+X <- matrix(1:9, 3)
+y <- -1:1
+
+X * y
+```
+```{r}
+X %*% y
+```
+```{r}
+X * X
+```
+```{r}
+X %*% X
+```
+
+(Some) useful functions:^[Explain em.]
+```{r}
+t(X)
+```
+```{r}
+diag(X)
+```
+```{r}
+A <- matrix(c(1, 10, -2, 3), 2)
+print(A)
+solve(A)
+```
+```{r}
+b <- c(-1, 1)
+solve(A, b)
+```
+
+## Data Frames
+
+Data frames represent data sets. The difference to matrices is that different columns can have different data types.
+Note that there are many different ways of creating a data frame.
+```{r}
+x <- c("Micheal", "Sofia", "Jonah")
+y <- c(1.0, 1.3, 3.0)
+z <- c("a", "b", "c")
+
+df <- data.frame(name=x, grades=y, type=z)
+print(df)
+
+m <- matrix(1:9, 3)
+df <- as.data.frame(m)
+print(df)
+```
+
+\noindent
+The iris data set:
+```{r}
+head(iris)
+```
+```{r}
+str(iris)
+```
+
+## Indexing of Matrices and Data Frames
+
+Matrices and data frames constitute two dimensional objects, this means we can ask for submatrices, columns, rows or individual elements.
+
+```{r}
+m <- matrix(1:9, 3)
+print(m)
+
+print(m[1, 1])
+print(m[1, ])
+print(m[, 1])
+print(m[c(1, 2), c(2, 3)])
+```
+
+When dealing with data frames we can on top access columns by their respective names.^[To access a column of a data frame by name use `df$column_name`. Note the different results of `df[["grade"]]` and `df["grade"]`.]
+
+```{r}
+df <- data.frame(name=c("Thomas", "Susan"), grade=c(1, 2))
+print(df)
+print(df$name)
+print(df[["grade"]])
+print(df["grade"])
+```
+
+# Logical Operators
+
+`r tufte::newthought('In this section')` we consider logical operators which form the direct equivalent to logical operators in mathematics.
+We first note that we can induce boolean values by comparison via relations (`<`, `>`, `<=`, `>=`) or (in)equalities (`==`, `!=`).
+On boolean values we may use logical operators as \emph{and} (`&`), \emph{or} (`|`), but also quantifier as $\exists$ (`any`) and $\forall$ (`all`).
+
+```{r}
+x <- 1:10
+
+x < 5
+```
+```{r}
+sum(x < 5)
+```
+```{r}
+x[x < 5]
+```
+```{r}
+x[!(x < 5)]
+```
+```{r}
+x[(x < 3) | (x > 7)]
+```
+```{r}
+x[(x < 8) & (x > 3)]
+```
+```{r}
+any(x < 8)
+```
+```{r}
+all(x < 8)
+```
+
+Often we are interested in the (indices of the) elements of a vector (matrix) that fulfill a certain condition.
+```{r}
+x <- c(3, 2, -100, 400)
+which(x > 100)
+```
+
+# Conditional Expressions
+
+In many scenarios our decisions depend on the specific state of the situation.
+For example, *if* it rains we will take the umbrella with us.
+Or a little more complex.
+*If* it rains we will take the umbrella, otherwise, *if* we fixed the flat bike tires already we will go by bike.
+(We illustrate the a fictional conditional decision tree on the blackboard.)
+This brings us to conditional expressions.
+
+## `if`
+
+```{r}
+x <- 10
+if (x < 10) {
+  print("x is smaller than 10.")
+}
+```
+
+## `else`
+
+```{r}
+x <- 10
+if (x < 10) {
+  print("x is smaller than 10.")
+} else{
+  print("x is *not* smaller than 10.")
+}
+```
+
+## `else if`
+
+```{r}
+x <- 10
+if (x < 10) {
+  print("x is smaller than 10.")
+} else if (x > 0) {
+  print("x is between 0 and 10.")
+} else {
+  print("x is either smaller than 0 or bigger than 10.")
+}
+```
+
+## Short digression to `User Input`
+
+```{r eval=FALSE}
+cat("Please choose which type of regression should be run:\n")
+x <- readline(prompt="Linear regression (1); Polynomial regression (2): ")
+x <- as.integer(x)
+
+if (x == 1) {
+  print("Okay lets do linear regression!")
+} else if (x == 2) {
+  print("Oh no I hate polynomial regression :(")
+} else {
+  print("There were only two options what did you do?")
+}
+```
+
+# Control Flow Statements
+
+When working on nearly any project we often find ourselves repeating simple tasks over and over again.
+If this happens with tasks that cannot be managed on a computer we hire research assistants; however, if it can be done on a computer there are cheaper ways.
+
+## For Loops
+
+Let's say we want to create a list with 10 entries and the `i`th entry is a matrix of dimension `i`x`i` filled with numbers `1` to `i**2`.
+This can be achieved very easily with a `for` loop.
+
+```{r}
+matrices <- list()
+for (i in 1:10) {
+  imatrix <- matrix(1:(i ** 2), nrow=i)
+  
+  matrices[[i]] <- imatrix
+}
+matrices[[5]]
+```
+
+## Short digression to Monte Carlo simulation
+
+Say we have two uniform random variables on $[0, 1]$, i.e. $X, Y \sim \mathcal{U}[0, 1]$.
+And say we want to estimate $\mathbb{P}(X + Y \in [0.75, 1.25])$ without doing any analytical mathematics.
+One solution to problems of this kind are so called \emph{Monte Carlo estimates}, in which we \emph{simulate} (in this case) two uniform random variables for many many times and each time we simply check if the sum of the realizations fulfills the statement.
+The frequency of times when the statement was fulfilled then approximates the probability.
+
+```{r}
+count <- 0
+nsim <- 10000
+for (i in 1:nsim) {
+  x <- runif(1, min=0, max=1)
+  y <- runif(1, min=0, max=1)
+  
+  z <- x + y
+  if (z >= 0.75 && z <= 1.25) {
+    count <- count + 1
+  }
+  
+}
+count / nsim
+# analytical solution = 7/6 = 0.4375
+```
+
+## While Loops
+
+For loops are very useful if we know exactly how many times we need to execute some statement.
+If we do not know the number of repetitions before starting the loop we can use `while` loops.
+
+\noindent
+\emph{Cherry picking results:}\\
+Once we introduced linear models and ordinary least squares regression we will show a simple example on how to cherry pick your data such that you can claim statistical significance even if there is none.\\
+
+\noindent
+Example:
+```{r eval=FALSE}
+userinput <- NULL
+while(is.null(userinput)) {
+  input <- readline("Type in a number between 0 and 10. \n")
+  input <- as.integer(input)
+  
+  if (is.numeric(input)) {
+    if (input >= 0 && input <= 10) {
+      userinput <- input
+    }
+  }
+}
+userinput
+```
+
+# Functions
+
+Functions are arguably the most important building block when writing large programs.
+We have already seen the use of many (built-in) functions.
+Functions, in general, allow us to use a piece of code multiple times in a program without repeating all of the code at every instance.
+
+## A normal example
+
+```{r}
+normaldensity <- function(x, mu, sigma) {
+  constant <- 1 / sqrt(2 * pi * sigma ** 2)
+  exponential <- exp(- (x - mu) ** 2 / (2 * sigma ** 2))
+  
+  return(constant * exponential)
+}
+
+normaldensity(x=0, mu=0, sigma=1)
+```
+```{r}
+normaldensity(x=1, mu=0, sigma=1)
+```
+
+```{r , fig.width = 10, fig.height = 5, fig.fullwidth = TRUE, fig.cap = "The standard normal density."}
+standardnormaldensity <- function(x) {
+  normaldensity(x, mu=0, sigma=1)
+}
+
+curve(standardnormaldensity, from=-4, to=4, xlab="x", ylab="f(x)", ylim=c(0, 0.5))
+```
+
+## Recursive functions
+
+The fibonacci sequence is defined by the following (recursive) function
+$$
+f(n) = \begin{cases}0, \, n =0\\ 1, \, n = 1\\ f(n-1) + f(n-2), \, n > 1 \,.\end{cases}
+$$
+We can implement this function easily using an `R` function.
+```{r}
+fibonacci <- function(n) {
+  if (n == 0) {
+    return(0)
+  } else if (n == 1) {
+    return(1)
+  } else {
+    return(fibonacci(n - 1) + fibonacci(n - 2))
+  }
+}
+
+n <- 1:10
+fib <- sapply(n, fibonacci)
+rbind(n, fib)
+```
+
+
