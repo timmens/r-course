@@ -1,12 +1,12 @@
 ---
 title: "Introduction to Programming using R"
 output:
+  tufte::tufte_html: default
   tufte::tufte_handout:
     citation_package: natbib
     latex_engine: xelatex
     number_section: true
-  tufte::tufte_html: default
-bibliography: lecture-notes.bib
+bibliography: script.bib
 link-citations: yes
 header-includes: 
   - \include{preamble.sty}
@@ -122,13 +122,13 @@ pi
 
 - `numeric`: `x <- 1.25`
 - `integer`: `x <- 1L`
-- `character`: `x <- "this_works"`^[In other programming languages this data type is known as a \emph{String}.]
+- `character`: `x <- "this_works"`^[This data type is also known as a String.]
 - `logical`: `x <- TRUE`, `y <- FALSE`
 - `complex`: `x <- 1 + 2i`
 
 # Data Structures
 
-In this section we consider the most common data structures used in R.
+`r tufte::newthought('In this section')` we consider the most common data structures used in R.
 This includes
 
 - `list`
@@ -138,12 +138,14 @@ This includes
 
 ## Lists
 
-Lists are objects which can contain different objects of different data types.^[`list` is a (built-in) function which takes as argument multiple objects and combines them to a list. See section function.`print` is a (built-in) function which prints its argument on the console.]
+Lists are objects which can contain different objects of different data types.^[`list` is a (built-in) function which takes as argument multiple objects and combines them to a list. See section function.`print` is a (built-in) function which prints its argument on the console.] ^[`length` is a (built-in) function which returns the length of its argument.]
 ```{r}
 x <- list(1, 1.25, "this works?")
-print(x)
+x
+```
+```{r}
 x <- list(x, 1 + 2i)
-print(x)
+x
 ```
 ```{r}
 length(x)
@@ -154,11 +156,15 @@ length(x)
 Vectors are similar to lists in that they can contain multiple objects, however, any vector can contain only objects of one data type.^[`c` is a (built-in) function which takes as argument multiple objects of the same data type and combines them to a vector. `c` stands for `combine`.]
 ```{r}
 x <- c(1, 2, 3)
-print(x)
+x
+```
+```{r}
 x <- c("this", "actually", "works")
-print(x)
+x
+```
+```{r}
 x <- c("wait?", 1)
-print(x)
+x
 ```
 ```{r}
 length(x)
@@ -173,57 +179,88 @@ If we supply a vector of indices we can access more than one element, i.e.
 `x[c(1, 3, 5)]` will return the first, third and fifth element of `x`.
 
 \noindent
-Examples:
+Examples:^[Note the difference between `y[1]` and `y[[1]]` for lists.]
 ```{r}
 x <- c(2, 4, 6, 8, 10)
-print(x[1])
-print(x[2])
-print(x[6])
-
+x[1]
+```
+```{r}
+x[2]
+```
+```{r}
+x[6]
+```
+```{r}
 x[6] <- 0
-print(x)
-
-print(x[c(1, 3, 5)])
-
+x
+```
+```{r}
+x[c(1, 3, 5)]
+```
+```{r}
 x[3] <- 100
-print(x)
-
+x
+```
+```{r}
 x[c(2, 4)] <- -100
-print(x)
-
-print(x[-1])
-print(x[-c(1, 2)])
-
+x
+```
+```{r}
+x[-1]
+```
+```{r}
+x[-c(1, 2)]
+```
+```{r}
+y <- list(1, 1.25, "this works?")
+y[1]
+```
+```{r}
+y[[1]]
 ```
 
 \noindent
-Useful commands:
+Useful commands:^[`seq` is a (built-in) function which produces sequences from a specified number to another; with the extra argument `by` one can specify the increment; with the extra argument `length.out` one can specify the desired length of the sequence.] ^[A quick way to create sequences which increment by one is by using the syntax `a:b` to create the sequence (vector) `c(a, a + 1, ..., b - 1, b)`.]
 ```{r}
 x <- 1:10
-print(x)
-
+x
+```
+```{r}
 x <- seq(from=1, to=10, by=2)
-print(x)
-
+x
+```
+```{r}
 x <- seq(from=0, to=1, length.out=20)
-print(x)
+x
 ```
 
 ## Calculating with Vectors
 
 ```{r}
 x <- 1:10
-print(x)
+x
+```
+```{r}
 y <- -4:5
-print(y)
-
-print(x + y)
-print(x * y)
-print(x ** y)
-
-print(2 * x)
-print(10 + x)
-print(x ** 2)
+y
+```
+```{r}
+x + y
+```
+```{r}
+x * y
+```
+```{r}
+x ** y
+```
+```{r}
+2 * x
+```
+```{r}
+10 + x
+```
+```{r}
+x ** 2
 ```
 
 \noindent
@@ -231,36 +268,46 @@ Recycling:
 ```{r}
 x <- 1:4
 y <- c(1, 5, 10)
-
-print(x + y)
+x + y
 ```
 
 \noindent
 (Some) useful functions:^[`sum` is a (built-in) function which sums all elements of its argument (also works on matrices). `mean` computes the mean of its argument, `sd` the (unbiased) standard deviation, `var` the variance and `cumsum` the cumulative sum.]
 ```{r}
 x <- -5:5
-print(x)
-
-print(sum(x))
-print(mean(x))
-print(sd(x))
-print(var(x))
-print(cumsum(x))
+x
+```
+```{r}
+sum(x)
+```
+```{r}
+mean(x)
+```
+```{r}
+sd(x)
+```
+```{r}
+var(x)
+```
+```{r}
+cumsum(x)
 ```
 
 ## Matrices
 
 Matrices represent two dimensional arrays which works similar to vectors in that matrices can only contain objects of a single data type.
-To create a matrix we need to know how many rows and columns it should have and what data it should contain.^[Note that `1:x` is equivalent to `c(1,2,...,x)`. Also note `matrix(data, rows, cols)` is not equal to `matrix(data, cols, rows)`; if you do not know which argument comes when, simply ask R for help: `?matrix`.]
+To create a matrix we need to know how many rows and columns it should have and what data it should contain.^[Note that `1:x` is equivalent to `c(1,2,...,x)`. Also note `matrix(data, rows, cols)` is not equal to `matrix(data, cols, rows)`; if you do not know which argument comes when, simply ask R for help: `?matrix`. (This works for any `R` function, just type `?function_name`).]
 ```{r}
 data <- 1:9
 rows <- 3
 cols <- 3
 
 x <- matrix(data, rows, cols)
-print(x)
+x
+```
+```{r}
 y <- matrix(data, rows, cols, byrow=TRUE)
-print(y)
+y
 ```
 ```{r}
 dim(x)
@@ -274,28 +321,38 @@ ncol(x)
 
 ## Combining Vectors and Matrices
 
+When computing different intermediate results it is often useful to combine them to get an end result.^[The (built-in) function `rbind` takes two matrices (or data frames) as input and stacks them on top of each other (on the rows). Similarly, `cbind`, stacks the two arrays next to each other (on the columns).]
 ```{r}
 x <- matrix(1:9, 3)
-print(x)
+x
+```
+```{r}
 y <- matrix(1:6, 2)
-print(y)
-
+y
+```
+```{r}
 z <- rbind(x, y)
-print(z)
-
+z
+```
+```{r}
 x <- cbind(1:3, 4:6)
-print(x)
+x
 ```
 
 \noindent
-(Some) useful functions:^[Explain them here formally.]
+(Some) useful functions:^[`rowSums` computes the sum of each row of a matrix (or data frame) and returns the resulting vector. `colSums` , `rowMean` and `colMeans` work analogously.]
 ```{r}
 m <- matrix(1:9, 3)
-print(m)
-
-print(rowSums(m))
-print(colSums(m))
-print(rowMeans(m))
+m
+```
+```{r}
+rowSums(m)
+```
+```{r}
+colSums(m)
+```
+```{r}
+rowMeans(m)
 ```
 
 In more general settings we might wish to apply an arbitrary function to the rows or columns of a matrix. We can do this with the function `apply`.^[`apply(X, MARGIN, FUN)`, `X` = matrix of interest, `MARGIN` = 1 to apply the function over the rows and 2 to apply the function over the columns, `FUN` = the function of interest.]
@@ -303,13 +360,13 @@ Example:
 
 ```{r}
 m <- matrix(1:9, 3)
-
-print(apply(m, 1, sd))
-print(apply(m, 2, sd))
+apply(m, 1, sd)
+```
+```{r}
+apply(m, 2, sd)
 ```
 
-
-## Matrix algebra
+## Matrix algebra^[Note the difference between `X * y` and `X %*% y`; the first multiples the `i`th element of `y` onto the `i`th row of `X` and the second computes the regular matrix product known from linear algebar.]
 
 ```{r}
 X <- matrix(1:9, 3)
@@ -327,7 +384,7 @@ X * X
 X %*% X
 ```
 
-(Some) useful functions:^[Explain em.]
+(Some) useful functions:^[`t` computes the inverse of its argument, which can be either a matrix or a data frame. `diag` returns the diagonal entries of its argument. `solve` can be used to either solve a linear system of equations or compute the inverse of its argument: if we provide `solve` with one matrix (or data frame) then it returns the inverse; if we supply a matrix (or data frame) and a vector, `solve` returns the solution to the system of linear equations. That is, $\text{solve}(X) = X^{-1}$ and $\text{solve}(X, y) = b$ with $X b = y$ (if the system has a solution).]
 ```{r}
 t(X)
 ```
@@ -336,7 +393,9 @@ diag(X)
 ```
 ```{r}
 A <- matrix(c(1, 10, -2, 3), 2)
-print(A)
+A
+```
+```{r}
 solve(A)
 ```
 ```{r}
@@ -354,15 +413,16 @@ y <- c(1.0, 1.3, 3.0)
 z <- c("a", "b", "c")
 
 df <- data.frame(name=x, grades=y, type=z)
-print(df)
-
+df
+```
+```{r}
 m <- matrix(1:9, 3)
 df <- as.data.frame(m)
-print(df)
+df
 ```
 
 \noindent
-The iris data set:
+The iris data set:^[The function `head` returns the first few rows of a data frame, which can be useful to have a quick glance at a data frame. `str` returns the internal structure of its argument and is particularly useful for data frames to output the key information in a data set.]
 ```{r}
 head(iris)
 ```
@@ -373,33 +433,68 @@ str(iris)
 ## Indexing of Matrices and Data Frames
 
 Matrices and data frames constitute two dimensional objects, this means we can ask for submatrices, columns, rows or individual elements.
-
 ```{r}
 m <- matrix(1:9, 3)
-print(m)
-
-print(m[1, 1])
-print(m[1, ])
-print(m[, 1])
-print(m[c(1, 2), c(2, 3)])
+m
+```
+```{r}
+m[1, 1]
+```
+```{r}
+m[1, ]
+```
+```{r}
+m[, 1]
+```
+```{r}
+m[c(1, 2), c(2, 3)]
 ```
 
-When dealing with data frames we can on top access columns by their respective names.^[To access a column of a data frame by name use `df$column_name`. Note the different results of `df[["grade"]]` and `df["grade"]`.]
-
+When dealing with data frames we can also access the columns by their respective names.^[To access a column of a data frame by name use `df$column_name`. Note the different results of `df[["grade"]]` and `df["grade"]`.]
 ```{r}
 df <- data.frame(name=c("Thomas", "Susan"), grade=c(1, 2))
-print(df)
-print(df$name)
-print(df[["grade"]])
-print(df["grade"])
+df
+```
+```{r}
+df$name
+```
+```{r}
+df[["grade"]]
+```
+```{r}
+df["grade"]
+```
+
+
+# Digression on asserting data types
+
+`r tufte::newthought('When building')` programs which handle data and objects that are unknown while developing the code it is often necessary to check of what type they are.
+Say we get an object (a variable) `x` from somewhere and we need to evaluate if its a number or data frame; and if it is a number, is it an integer or a real number.
+For these questions are supplies the many functions of the type `is.vector`, `is.matrix`, `is.integer`.
+We will not list them all and only provide a small example.
+
+```{r}
+x <- 1:10
+is.integer(x)
+```
+```{r}
+is.numeric(x)
+```
+```{r}
+is.vector(x)
+```
+```{r}
+is.data.frame(x)
+```
+```{r}
+is.function(x)
 ```
 
 # Logical Operators
 
 `r tufte::newthought('In this section')` we consider logical operators which form the direct equivalent to logical operators in mathematics.
 We first note that we can induce boolean values by comparison via relations (`<`, `>`, `<=`, `>=`) or (in)equalities (`==`, `!=`).
-On boolean values we may use logical operators as \emph{and} (`&`), \emph{or} (`|`), but also quantifier as $\exists$ (`any`) and $\forall$ (`all`).
-
+On boolean values we may use logical operators as and (`&`), or (`|`), but also quantifier as $\exists$ (`any`) and $\forall$ (`all`).
 ```{r}
 x <- 1:10
 
@@ -426,7 +521,6 @@ any(x < 8)
 ```{r}
 all(x < 8)
 ```
-
 Often we are interested in the (indices of the) elements of a vector (matrix) that fulfill a certain condition.
 ```{r}
 x <- c(3, 2, -100, 400)
@@ -435,7 +529,7 @@ which(x > 100)
 
 # Conditional Expressions
 
-In many scenarios our decisions depend on the specific state of the situation.
+`r tufte::newthought('In many scenarios')` our decisions depend on the specific state of the situation.
 For example, *if* it rains we will take the umbrella with us.
 Or a little more complex.
 *If* it rains we will take the umbrella, otherwise, *if* we fixed the flat bike tires already we will go by bike.
@@ -475,7 +569,9 @@ if (x < 10) {
 }
 ```
 
-## Short digression to `User Input`
+## Short digression into `User Input`
+
+Sometimes we want to write programs which work in many different scenarios that can be specified by the user of the program.^[Note that the (built-in) function `readline` reads input from the user in the `R` console and stores it as a string.] ^[The function `as.integer` takes as argument an `R` object and tries to coerce the input to an `integer` if possible; For example the string `"1"` can be coerced to a `1` but the string `"text"` cannot.]
 
 ```{r eval=FALSE}
 cat("Please choose which type of regression should be run:\n")
@@ -493,12 +589,12 @@ if (x == 1) {
 
 # Control Flow Statements
 
-When working on nearly any project we often find ourselves repeating simple tasks over and over again.
+`r tufte::newthought('When working on')` nearly any project we often find ourselves repeating simple tasks over and over again.
 If this happens with tasks that cannot be managed on a computer we hire research assistants; however, if it can be done on a computer there are cheaper ways.
 
 ## For Loops
 
-Let's say we want to create a list with 10 entries and the `i`th entry is a matrix of dimension `i`x`i` filled with numbers `1` to `i**2`.
+Let's say we want to create a list with 10 entries and the `i`th entry is a matrix of dimension `i`x`i` filled with numbers 1 to $i^2$.
 This can be achieved very easily with a `for` loop.
 
 ```{r}
@@ -511,13 +607,12 @@ for (i in 1:10) {
 matrices[[5]]
 ```
 
-## Short digression to Monte Carlo simulation
+## Short digression into Monte Carlo simulation
 
 Say we have two uniform random variables on $[0, 1]$, i.e. $X, Y \sim \mathcal{U}[0, 1]$.
 And say we want to estimate $\mathbb{P}(X + Y \in [0.75, 1.25])$ without doing any analytical mathematics.
-One solution to problems of this kind are so called \emph{Monte Carlo estimates}, in which we \emph{simulate} (in this case) two uniform random variables for many many times and each time we simply check if the sum of the realizations fulfills the statement.
-The frequency of times when the statement was fulfilled then approximates the probability.
-
+One solution to problems of this kind are so called Monte Carlo estimates, in which we simulate (in this case) two uniform random variables for many many times and each time we simply check if the sum of the realizations fulfills the statement.
+The frequency of times when the statement was fulfilled then approximates the probability.^[In the latter chapters we will consider the function `runif` in more detail; for here only note that `runif(1, 0, 1)` evaluates to a realization of a uniform random variable on $[0, 1]$.] ^[Note the use of `#` which tells `R` to ignore the following statement; These are called comments and should be used to clarify ones code.]
 ```{r}
 count <- 0
 nsim <- 10000
@@ -531,18 +626,17 @@ for (i in 1:nsim) {
   }
   
 }
-count / nsim
-# analytical solution = 7/6 = 0.4375
+count / nsim # analytical solution = 7/6 = 0.4375
 ```
 
 ## While Loops
 
 For loops are very useful if we know exactly how many times we need to execute some statement.
-If we do not know the number of repetitions before starting the loop we can use `while` loops.
+If we do not know the number of repetitions before starting the loop we can use `while` loops.\newline
 
 \noindent
-\emph{Cherry picking results:}\\
-Once we introduced linear models and ordinary least squares regression we will show a simple example on how to cherry pick your data such that you can claim statistical significance even if there is none.\\
+Cherry picking results:\newline
+Once we introduced linear models and ordinary least squares regression we will show a simple example on how to cherry pick your data such that you can claim statistical significance even if there is none.\newline
 
 \noindent
 Example:
@@ -563,12 +657,14 @@ userinput
 
 # Functions
 
-Functions are arguably the most important building block when writing large programs.
+`r tufte::newthought('Functions are')` arguably the most important building block when writing large programs.
 We have already seen the use of many (built-in) functions.
 Functions, in general, allow us to use a piece of code multiple times in a program without repeating all of the code at every instance.
 
 ## A normal example
 
+Say we need to compute the value of a normal density with mean `mu` and standard deviation `sigma` at some point `x`.
+In case we need to compute this value for many different means, variances or points we can save on time (and erros) by implementing a function once.^[Note the use of special (built-in) mathematical functions `sqrt` and `exp`, which compute the square root and exponential of their arguments, respectively.] ^[The (built-in) function `curve` displays the graph of a (mathematical) function.]
 ```{r}
 normaldensity <- function(x, mu, sigma) {
   constant <- 1 / sqrt(2 * pi * sigma ** 2)
@@ -582,22 +678,21 @@ normaldensity(x=0, mu=0, sigma=1)
 ```{r}
 normaldensity(x=1, mu=0, sigma=1)
 ```
-
-```{r , fig.width = 10, fig.height = 5, fig.fullwidth = TRUE, fig.cap = "The standard normal density."}
+```{r , fig.width = 10, fig.height = 5, fig.fullwidth = TRUE}
 standardnormaldensity <- function(x) {
   normaldensity(x, mu=0, sigma=1)
 }
 
-curve(standardnormaldensity, from=-4, to=4, xlab="x", ylab="f(x)", ylim=c(0, 0.5))
+curve(standardnormaldensity, from=-4, to=4, xlab="x", ylab="f(x)")
 ```
 
 ## Recursive functions
 
-The fibonacci sequence is defined by the following (recursive) function
+The Fibonacci sequence is defined by the following (recursive) function
 $$
 f(n) = \begin{cases}0, \, n =0\\ 1, \, n = 1\\ f(n-1) + f(n-2), \, n > 1 \,.\end{cases}
 $$
-We can implement this function easily using an `R` function.
+We can implement this function easily using an `R` function.^[The (built-in) function `sapply` applies a function to each element of its first argument, which is typically a `list` or a `vector`.]
 ```{r}
 fibonacci <- function(n) {
   if (n == 0) {
