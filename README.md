@@ -41,8 +41,10 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Tim Mensinger - [timmens.github.io](https://timmens.github.io/) - tim.mensinger@uni-bonn.de
+Tim Mensinger - tim.mensinger@uni-bonn.de - [timmens.github.io](https://timmens.github.io/) 
+
 Moritz Brinker - s3mobrin@uni-bonn.de
+
 Florian Schoner - florian.schoner@uni-bonn.de
 
 Project Link: [https://github.com/timmens/r-course](https://github.com/timmens/r-course)
