@@ -14,9 +14,9 @@
 ## About The Course
 
 On this page we provide all materials for the *Introductory R Course*.
-The course starts at the 10.2.2020 (Monday) and goes until the 14.2.2020 (Friday).
+The course starts on the 10.2.2020 (Monday) and goes until the 14.2.2020 (Friday).
 
-You will find the script in the folder `script`.
+You will find the script in the folder `script` as well as a nicely rendered version here: [online script](https://htmlpreview.github.io/?https://github.com/timmens/r-course/blob/master/script/script.html).
 We will upload all files that are produced during the lectures in the folder `lecture-notes`.
 You can find the exercises in the folder `exercises`.
 
