@@ -5,13 +5,13 @@
 
 ## Table of Contents
 
-* [About the Project](#about-the-project)
+* [About the course](#about-the-project)
 * [Contributing](#contributing)
 * [License](#license)
 * [Contact](#contact)
 
-<!-- ABOUT THE PROJECT -->
-## About The Project
+<!-- ABOUT THE COURSE -->
+## About The Course
 
 On this page we provide all materials for the *Introductory R Course*.
 The course starts at the 10.2.2020 (Monday) and goes until the 14.2.2020 (Friday).
