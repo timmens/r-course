@@ -710,3 +710,20 @@ rbind(n, fib)
 ```
 
 
+# Importing and Exporting Data
+
+`r tufte::newthought('This section')` shows you how to import data from different file types into `R`. Before we start, some remarks are in order.
+
+- Variables should be kept in columns, observations in rows
+- Missing values should be coded consistently (e.g. `NA`)
+- Variable names must not begin with a number and must not contain `#`, `%` or spaces
+- Don't ever replace the source file
+- Check whether whether reading was successful before (!) starting your analysis
+
+## .txt and .csv files
+
+For many file types, importing is facilitated by base-`R` functions. For example, importing a .txt file can be achieved with
+
+`read.table(file, header = FALSE, sep = "", dec = ".",...)`,
+
+where `file` is the location of the file to be imported^[Note that standard backslashes (the Windows default) do not work and need to be replaced by either forwardslashes or double backslashes, i.e. `"C:/R/cardata.csv"` or `"C:\\R\\cardata.csv"` instead of `"C:\R\cardata.csv"`)], `header` indicates whether the first line of the file contains variable names, `sep` is the field separator character, and `dec` is the character used in the file for decimal points.
