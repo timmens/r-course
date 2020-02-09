@@ -16,3 +16,5 @@ script/skeleton*
 
 exercises/hidden/
 exercises/exercise-sheets/
+
+data/mtcars.csv

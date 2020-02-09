@@ -812,7 +812,7 @@ for (i in 1:nsim) {
   
 }
 count / nsim # analytical solution = 7/6 = 0.4375</code></pre>
-<pre><code>[1] 0.4342</code></pre>
+<pre><code>[1] 0.4447</code></pre>
 </div>
 <div id="while-loops" class="section level2">
 <h2>While Loops</h2>
@@ -894,11 +894,35 @@ fib    1    1    2    3    5    8   13   21   34    55</code></pre>
 <li>Don’t ever replace the source file</li>
 <li>Check whether whether reading was successful before (!) starting your analysis</li>
 </ul>
-<div id="txt-and-.csv-files" class="section level2">
-<h2>.txt and .csv files</h2>
+<div id="importing-.txt-.csv-and-.dta-files" class="section level2">
+<h2>Importing .txt, .csv, and .dta files</h2>
 <p>For many file types, importing is facilitated by base-<code>R</code> functions. For example, importing a .txt file can be achieved with</p>
 <p><code>read.table(file, header = FALSE, sep = &quot;&quot;, dec = &quot;.&quot;,...)</code>,</p>
-<p>where <code>file</code> is the location of the file to be imported<label for="tufte-sn-29" class="margin-toggle sidenote-number">29</label><input type="checkbox" id="tufte-sn-29" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">29</span> Note that standard backslashes (the Windows default do not work and need to be replaced by either forwardslashes or double backslashes, i.e. <code>&quot;C:/R/cardata.csv&quot;</code> or <code>&quot;C:\\R\\cardata.csv&quot;</code> instead of <code>&quot;C:\R\cardata.csv&quot;</code>)</span>, <code>header</code> indicates whether the first line of the file contains variable names, <code>sep</code> is the field separator character, and <code>dec</code> is the character used in the file for decimal points.</p>
+<p>where <code>file</code> is the location of the file to be imported<label for="tufte-sn-29" class="margin-toggle sidenote-number">29</label><input type="checkbox" id="tufte-sn-29" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">29</span> Note that standard backslashes (the Windows default) do not work and need to be replaced by either forwardslashes or double backslashes, i.e. <code>&quot;../data/mtcars.txt&quot;</code> or <code>&quot;..\\data\\mtcars.txt&quot;</code> instead of <code>&quot;..\data\mtcars.txt&quot;</code>)</span>, <code>header</code> indicates whether the first line of the file contains variable names, <code>sep</code> is the field separator character, and <code>dec</code> is the character used in the file for decimal points. Similarly, if your data comes in .csv format you would go for</p>
+<p><code>read.csv(file, header = TRUE, sep = &quot;,&quot;, dec = &quot;.&quot;,...)</code>.<label for="tufte-sn-30" class="margin-toggle sidenote-number">30</label><input type="checkbox" id="tufte-sn-30" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">30</span> <code>R</code> can also deal with the standard file types from <code>Stata</code>, <code>SPSS</code>, and <code>SAS</code>, among many others. Reading those might involve commands from additional <code>R</code>-packages.</span></p>
+<p><code>R</code> also has an own file type, <code>.RData</code>. These files can be read using</p>
+<p><code>load(file)</code></p>
+<p>As an example, let us look at the dataset that can be found in the GitHub repo of this course.</p>
+<pre class="r"><code>dat &lt;- read.table(&quot;..\\data\\mtcars.txt&quot;, header = TRUE, sep = &quot;&quot;)
+head(dat)</code></pre>
+<pre><code>                   mpg cyl disp  hp drat    wt  qsec vs am gear carb
+Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1</code></pre>
+<p>In <code>R-Studio</code> you might want to use <code>View(dat)</code> to get an overview.</p>
+</div>
+<div id="exporting" class="section level2">
+<h2>Exporting</h2>
+<p>Similar to the <code>read</code>-commands, you can save objects using the <code>write</code>-commands. For instance, we might save a dataframe in our workspace as a .csv using</p>
+<p><code>write.csv(x, file = &quot;&quot;,...)</code>,</p>
+<p>where <code>x</code> is the object to be written and <code>file</code> is path where the object ought to be saved. If you would like to save the object as a <code>.RData</code> file, the syntax is</p>
+<p><code>save(...)</code>,</p>
+<p>where <code>...</code> are the names of the objects to be saved.</p>
+<p>To save the object in our workspace to a .csv, we execute the following command.</p>
+<pre class="r"><code>write.csv(dat, file = &quot;..\\data\\mtcars.csv&quot;)</code></pre>
 </div>
 </div>
 

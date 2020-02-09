@@ -720,10 +720,45 @@ rbind(n, fib)
 - Don't ever replace the source file
 - Check whether whether reading was successful before (!) starting your analysis
 
-## .txt and .csv files
+## Importing .txt, .csv, and .dta files
 
 For many file types, importing is facilitated by base-`R` functions. For example, importing a .txt file can be achieved with
 
 `read.table(file, header = FALSE, sep = "", dec = ".",...)`,
 
-where `file` is the location of the file to be imported^[Note that standard backslashes (the Windows default) do not work and need to be replaced by either forwardslashes or double backslashes, i.e. `"C:/R/cardata.csv"` or `"C:\\R\\cardata.csv"` instead of `"C:\R\cardata.csv"`)], `header` indicates whether the first line of the file contains variable names, `sep` is the field separator character, and `dec` is the character used in the file for decimal points.
+where `file` is the location of the file to be imported^[Note that standard backslashes (the Windows default) do not work and need to be replaced by either forwardslashes or double backslashes, i.e. `"../data/mtcars.txt"` or `"..\\data\\mtcars.txt"` instead of `"..\data\mtcars.txt"`)], `header` indicates whether the first line of the file contains variable names, `sep` is the field separator character, and `dec` is the character used in the file for decimal points.
+Similarly, if your data comes in .csv format you would go for
+
+`read.csv(file, header = TRUE, sep = ",", dec = ".",...)`.^[`R` can also deal with the standard file types from `Stata`, `SPSS`, and `SAS`, among many others. Reading those might involve commands from additional `R`-packages.]
+
+`R` also has an own file type, `.RData`. These files can be read using 
+
+`load(file)`
+
+As an example, let us look at the dataset that can be found in the GitHub repo of this course.
+
+
+```{r}
+dat <- read.table("..\\data\\mtcars.txt", header = TRUE, sep = "")
+head(dat)
+```
+In `R-Studio` you might want to use `View(dat)` to get an overview.
+
+## Exporting 
+
+Similar to the `read`-commands, you can save objects using the `write`-commands. For instance, we might save a dataframe in our workspace as a .csv using 
+
+`write.csv(x, file = "",...)`,
+
+where `x` is the object to be written and `file` is path where the object ought to be saved. If you would like to save the object as a `.RData` file, the syntax is
+
+`save(...)`,
+
+where `...` are the names of the objects to be saved.
+
+To save the object in our workspace to a .csv, we execute the following command.
+
+```{r}
+write.csv(dat, file = "..\\data\\mtcars.csv")
+```
+
