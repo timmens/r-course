@@ -739,7 +739,7 @@ As an example, let us look at the dataset that can be found in the GitHub repo o
 
 
 ```{r}
-dat <- read.table("..\\data\\mtcars.txt", header = TRUE, sep = "")
+dat <- read.table("../data/mtcars.txt", header = TRUE, sep = "")
 head(dat)
 ```
 In `R-Studio` you might want to use `View(dat)` to get an overview.
@@ -759,7 +759,7 @@ where `...` are the names of the objects to be saved.
 To save the object in our workspace to a .csv, we execute the following command.
 
 ```{r}
-write.csv(dat, file = "..\\data\\mtcars.csv")
+write.csv(dat, file = "../data/mtcars.csv")
 ```
 
 
