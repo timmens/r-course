@@ -8,14 +8,14 @@ output:
     number_section: true
 bibliography: script.bib
 link-citations: yes
-header-includes: 
+header-includes:
   - \include{preamble.sty}
 ---
 ```{r setup, include=FALSE}
 library(tufte)
 # invalidate cache when the tufte version changes
 knitr::opts_chunk$set(
-  tidy = FALSE, 
+  tidy = FALSE,
   cache.extra = packageVersion('tufte'),
   comment=NA)
 options(htmltools.dir.version = FALSE)
@@ -601,7 +601,7 @@ This can be achieved very easily with a `for` loop.
 matrices <- list()
 for (i in 1:10) {
   imatrix <- matrix(1:(i ** 2), nrow=i)
-  
+
   matrices[[i]] <- imatrix
 }
 matrices[[5]]
@@ -619,12 +619,12 @@ nsim <- 10000
 for (i in 1:nsim) {
   x <- runif(1, min=0, max=1)
   y <- runif(1, min=0, max=1)
-  
+
   z <- x + y
   if (z >= 0.75 && z <= 1.25) {
     count <- count + 1
   }
-  
+
 }
 count / nsim # analytical solution = 7/6 = 0.4375
 ```
@@ -645,7 +645,7 @@ userinput <- NULL
 while(is.null(userinput)) {
   input <- readline("Type in a number between 0 and 10. \n")
   input <- as.integer(input)
-  
+
   if (is.numeric(input)) {
     if (input >= 0 && input <= 10) {
       userinput <- input
@@ -669,7 +669,7 @@ In case we need to compute this value for many different means, variances or poi
 normaldensity <- function(x, mu, sigma) {
   constant <- 1 / sqrt(2 * pi * sigma ** 2)
   exponential <- exp(- (x - mu) ** 2 / (2 * sigma ** 2))
-  
+
   return(constant * exponential)
 }
 
@@ -710,3 +710,120 @@ rbind(n, fib)
 ```
 
 
+# Importing and Exporting Data
+
+`r tufte::newthought('This section')` shows you how to import data from different file types into `R`. Before we start, some remarks are in order.
+
+- Variables should be kept in columns, observations in rows
+- Missing values should be coded consistently (e.g. `NA`)
+- Variable names must not begin with a number and must not contain `#`, `%` or spaces
+- Don't ever replace the source file
+- Check whether whether reading was successful before (!) starting your analysis
+
+## Importing .txt, .csv, and .dta files
+
+For many file types, importing is facilitated by base-`R` functions. For example, importing a .txt file can be achieved with
+
+`read.table(file, header = FALSE, sep = "", dec = ".",...)`,
+
+where `file` is the location of the file to be imported^[Note that standard backslashes (the Windows default) do not work and need to be replaced by either forwardslashes or double backslashes, i.e. `"../data/mtcars.txt"` or `"..\\data\\mtcars.txt"` instead of `"..\data\mtcars.txt"`)], `header` indicates whether the first line of the file contains variable names, `sep` is the field separator character, and `dec` is the character used in the file for decimal points.
+Similarly, if your data comes in .csv format you would go for
+
+`read.csv(file, header = TRUE, sep = ",", dec = ".",...)`.^[`R` can also deal with the standard file types from `Stata`, `SPSS`, and `SAS`, among many others. Reading those might involve commands from additional `R`-packages.]
+
+`R` also has an own file type, `.RData`. These files can be read using
+
+`load(file)`
+
+As an example, let us look at the dataset that can be found in the GitHub repo of this course.
+
+
+```{r}
+dat <- read.table("..\\data\\mtcars.txt", header = TRUE, sep = "")
+head(dat)
+```
+In `R-Studio` you might want to use `View(dat)` to get an overview.
+
+## Exporting
+
+Similar to the `read`-commands, you can save objects using the `write`-commands. For instance, we might save a dataframe in our workspace as a .csv using
+
+`write.csv(x, file = "",...)`,
+
+where `x` is the object to be written and `file` is path where the object ought to be saved. If you would like to save the object as a `.RData` file, the syntax is
+
+`save(...)`,
+
+where `...` are the names of the objects to be saved.
+
+To save the object in our workspace to a .csv, we execute the following command.
+
+```{r}
+write.csv(dat, file = "..\\data\\mtcars.csv")
+```
+
+
+
+# Plotting Data
+`r tufte::newthought('Plots')` can be powerful tool to summarize data succinctly. This section provides a short overview of plotting capabilities of base `R`.^[Advanced users usually create their plots using the `ggplot2` package developed by Hadley Wickham. If you are interested, have a look here: https://ggplot2.tidyverse.org/]
+
+Generally, base-`R` distinguishes between two types of graphics commands, high- and low-level commands. While a high-level command creates a plot (and overwrites a previously displayed plot), low-level commands are used to add things to an existing plot. High-level commands include, among others, `plot`, `hist`, `barplot`, `boxplot`, `qqnorm`, and `curve`.
+
+As an example, consider the following data, where $Y$ is the crop yield of corn and $X$ is the amount of fertilizer used at each farm, respectively.
+
+```{r}
+Y <- c(100, 200, 300, 400, 500, 600, 700)
+X <- c(40, 50, 50, 70, 65, 65, 80)
+plot(X, Y, main = "Relationship between fertilizer and crop yield", sub = "Figure 1",
+     xlab = "Fertilizer in kilogram", ylab = "Crop yield in USD",
+     pch = 25, col = "red")
+```
+
+As is vividly illustrated in the previous example, the `plot`-command has various optional features. Let us try some more below.
+
+```{r}
+plot(X, Y, type = "l", lwd = 3, lty = 6,
+     ylim = c(0, 1000), xlim = c(30, 90))
+```
+
+# Digression - sampling from probability distributions
+
+`R` provides pseudo-random sampling from many of the common probability distributions.^[See `?distribution` for an overview.] Below we draw 500 realizations from a standard normal distribution. By plotting a histogram of the data, we can obtain at least suggestive evidence that we have indeed drawn from a standard normal distribution. To further corroborate our hypothesis, we add the density of the standard normal distribution to our plot.
+
+```{r}
+normal_sample <- rnorm(500, mean = 0, sd = 1)
+hist(normal_sample, freq = FALSE, xlim = c(-4, 4), ylim = c(0, 0.5))
+curve(dnorm(x, mean = 0, sd = 1), col ="red", add = TRUE)
+```
+
+# Low-level commands
+
+To modify existing plots, `R` offers a variety of low-level commands. Some of them and their features are listed below.
+
+- `abline(a, b)` adds a straight line with intercept `a` and slope `b`
+- `lines(x, y)` joins the points of `x` and `y` and adds the line to the plot
+- `points(x, y)` similar to lines, but with points
+- `text(x, y, "Text")` adds "Text" at coordinates `(x, y)`
+- `legend(x, y, legend,...)` adds a legend at coordinates `(x, y)` using the strings provided in `legend`
+
+```{r}
+curve(dnorm(x, mean = 0, sd = 1), from = -7.5, to = 7.5, lty = 1)
+curve(dnorm(x, mean = 0, sd = 2), add = TRUE, col = "red", lwd = 2, lty = 2)
+lines(seq(-7.5, 7.5, length.out = 1000),
+      dnorm(seq(-7.5, 7.5, length.out = 1000), sd = 1.5), col = "blue", lty = 3, lwd = 2)
+legend("topleft",
+       c(expression(paste(mu == 0," und ", sigma == 2)),
+         expression(paste(mu == 0," und ", sigma == 1)),
+         expression(paste(mu == 0," und ", sigma == 1.5))),
+       lwd = c(1, 2, 2), lty = 1:3, col = c("black", "red", "blue"))
+```
+
+To display multiple plots in the same window as a matrix, use
+
+`par(mfrow = c(x1, x2))`
+
+to determine the number of rows (`x1`) and columns (`x2`) of your plot matrix. Use
+`dev.off()`
+to reset the setting.
+
+Additionally, you might use RStudio to export your plot to a certain file type.
