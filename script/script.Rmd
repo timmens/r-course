@@ -408,7 +408,7 @@ solve(A, b)
 Data frames represent data sets. The difference to matrices is that different columns can have different data types.
 Note that there are many different ways of creating a data frame.
 ```{r}
-x <- c("Micheal", "Sofia", "Jonah")
+x <- c("Micheal", "Robin", "Jonah")
 y <- c(1.0, 1.3, 3.0)
 z <- c("a", "b", "c")
 
@@ -710,88 +710,3 @@ rbind(n, fib)
 ```
 
 
-# Importing and Exporting Data
-
-`r tufte::newthought('This section')` shows you how to import data from different file types into `R`. Before we start, some remarks are in order.
-
-- Variables should be kept in columns, observations in rows
-- Missing values should be coded consistently (e.g. `NA`)
-- Variable names must not begin with a number and must not contain `#`, `%` or spaces
-- Don't ever replace the source file
-- Check whether whether reading was successful before (!) starting your analysis
-
-## Importing .txt, .csv, and .dta files
-
-For many file types, importing is facilitated by base-`R` functions. For example, importing a .txt file can be achieved with
-
-`read.table(file, header = FALSE, sep = "", dec = ".",...)`,
-
-where `file` is the location of the file to be imported^[Note that standard backslashes (the Windows default) do not work and need to be replaced by either forwardslashes or double backslashes, i.e. `"../data/mtcars.txt"` or `"..\\data\\mtcars.txt"` instead of `"..\data\mtcars.txt"`)], `header` indicates whether the first line of the file contains variable names, `sep` is the field separator character, and `dec` is the character used in the file for decimal points.
-Similarly, if your data comes in .csv format you would go for
-
-`read.csv(file, header = TRUE, sep = ",", dec = ".",...)`.^[`R` can also deal with the standard file types from `Stata`, `SPSS`, and `SAS`, among many others. Reading those might involve commands from additional `R`-packages.]
-
-`R` also has an own file type, `.RData`. These files can be read using 
-
-`load(file)`
-
-As an example, let us look at the dataset that can be found in the GitHub repo of this course.
-
-
-```{r}
-dat <- read.table("..\\data\\mtcars.txt", header = TRUE, sep = "")
-head(dat)
-```
-In `R-Studio` you might want to use `View(dat)` to get an overview.
-
-## Exporting 
-
-Similar to the `read`-commands, you can save objects using the `write`-commands. For instance, we might save a dataframe in our workspace as a .csv using 
-
-`write.csv(x, file = "",...)`,
-
-where `x` is the object to be written and `file` is path where the object ought to be saved. If you would like to save the object as a `.RData` file, the syntax is
-
-`save(...)`,
-
-where `...` are the names of the objects to be saved.
-
-To save the object in our workspace to a .csv, we execute the following command.
-
-```{r}
-write.csv(dat, file = "..\\data\\mtcars.csv")
-```
-
-
-
-# Plotting Data
-`r tufte::newthought('Plots')` can be powerful tool to summarize data succinctly. This section provides a short overview of plotting capabilities of base `R`.^[Advanced users usually create their plots using the `ggplot2` package developed by Hadley Wickham. If you are interested, have a look here: https://ggplot2.tidyverse.org/]
-
-Generally, base-`R` distinguishes between two types of graphics commands, high- and low-level commands. While a high-level command creates a plot (and overwrites a previously displayed plot), low-level commands are used to add things to an existing plot. High-level commands include, among others, `plot`, `hist`, `barplot`, `boxplot`, `qqnorm`, and `curve`.
-
-As an example, consider the following data, where $Y$ is the crop yield of corn and $X$ is the amount of fertilizer used at each farm, respectively.
-
-```{r}
-Y <- c(100, 200, 300, 400, 500, 600, 700)
-X <- c(40, 50, 50, 70, 65, 65, 80)
-plot(X, Y, main = "Relationship between fertilizer and crop yield", sub = "Figure 1", 
-     xlab = "Fertilizer in kilogram", ylab = "Crop yield in USD",
-     pch = 25, col = "red")
-```
-
-As is vividly illustrated in the previous example, the `plot`-command has various optional features. Let us try some more below.
-
-```{r}
-plot(X, Y, type = "l", lwd = 3, lty = 6,
-     ylim = c(0, 1000), xlim = c(30, 90))
-```
-
-# Digression - sampling from probability distributions
-
-`R` provides pseudo-random sampling from many of the common probability distributions.^[See `?distribution` for an overview.] Below we draw 500 realizations from a standard normal distribution. By plotting a histogram of the data, we can obtain at least suggestive evidence that we have indeed drawn from a standard normal distribution. To further corroborate our hypothesis, we add the density of the standard normal distribution to our plot.
-
-```{r}
-normal_sample <- rnorm(500, mean = 0, sd = 1)
-hist(normal_sample, freq = FALSE, xlim = c(-4, 4), ylim = c(0, 0.5))
-curve(dnorm(x, mean = 0, sd = 1), col ="red", add = TRUE)
-```
