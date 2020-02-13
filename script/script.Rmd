@@ -1,11 +1,11 @@
 ---
 title: "Introduction to Programming using R"
 output:
-  tufte::tufte_html: default
   tufte::tufte_handout:
     citation_package: natbib
     latex_engine: xelatex
     number_section: true
+  tufte::tufte_html: default
 bibliography: script.bib
 link-citations: yes
 header-includes:
