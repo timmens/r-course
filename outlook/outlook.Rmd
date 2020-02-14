@@ -1,0 +1,326 @@
+---
+title: Outlook - Introduction to R (2020 Winter)
+author: Tim Mensinger
+github: {user: timmens, repo: outlook-R-Introduction}
+runtime: shiny
+output:
+  html_document:
+    toc: true
+    toc_depth: 1
+    code_folding: hide
+---
+# introduction 
+
+![source: http://www.lac.inpe.br/~rafael.santos/Docs/R/CAP394/WholeStory-Iris.html](iris.png)
+```{r warning = FALSE, message = FALSE}  
+# load relevant packages
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(shiny)
+head(iris)
+```
+
+# tidydata 
+
+Iris data set is *wide*, we need to convert it into a *long* format. (Tidy data, Hadley Wickham,  *Journal of Statistical Software*. URL: http://vita.had.co.nz/papers/tidy-data.html)
+
+![source: http://hadley.nz/](hadley_wickham.jpg)
+```{r}
+iris$Flower <- seq_len(nrow(iris))
+  
+iris_tidy <- iris %>% 
+               tidyr::gather(key, Value, -Species, -Flower) %>% 
+               tidyr::separate(key, c("Part", "Measure"), "\\.")
+  
+iris_wide <- iris_tidy %>% tidyr::spread(Measure, Value)
+```
+
+## iris_tidy dataset 
+```{r}
+head(iris_tidy)
+```
+## iris_wide dataset
+```{r}
+head(iris_wide)
+```
+
+
+# ggplot2 
+
+## plots using iris dataset 
+```{r warning = FALSE, message = FALSE}
+p1 <- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width))
+p2 <- ggplot(iris, aes(x = Petal.Length, y = Petal.Width))
+
+p1 + geom_jitter(aes(col = Species))
+p2 + geom_jitter(aes(col = Species))
+
+```
+
+## plots using tidy_iris dataset 
+```{r warning = FALSE, message = FALSE}
+ggplot(iris_tidy, aes(x = Species, y = Value, col = Measure)) + 
+  geom_jitter()
+
+ggplot(iris_wide, aes(x = Length, y = Width, col = Part)) + 
+  geom_jitter() + 
+  facet_grid(.~ Species) + 
+  geom_smooth(aes(linetype = Part), method = 'loess', col = 'black')
+```
+
+## various other plots 
+
+````{r warning = FALSE, message = FALSE}
+ggplot(iris %>% tidyr::gather(Variable, Value, -Species, -Flower), 
+       aes(x = Species, y = Value, fill = Variable)) + 
+  geom_bar(stat = "identity", pos = "dodge")
+
+ggplot(iris, aes(x = Sepal.Width, fill = Species)) + 
+  geom_density(stat = "density", alpha = 0.3)
+```
+
+## what we will analyze from here on
+
+```{r warning = FALSE, message = FALSE}
+ggplot(iris_wide, aes(x = Length, y = Width, col = Species)) + 
+  geom_jitter(aes(shape = Species), size = 1.5) + 
+  facet_grid(.~Part)
+```
+
+# regression and classification / machine learning 
+
+```{r echo = FALSE}
+# helper functions 
+
+pred_compare_df <- function(test_index, y_test, prediction, name, numerical) {
+  if(numerical) {
+    true <- y_test
+  } else {
+    true <- iris$Species[test_index]
+  }
+  
+  df <- data.frame(id = test_index, true = true,
+                   pred = prediction)
+  colnames(df) <- c("id", "true", name)
+  df <- gather(df, method, value, -id)
+  df
+}
+
+string_to_numeric_fact <- function(fact) {
+  plyr::revalue(fact, c("setosa" = -1,  "versicolor" = 0,  "virginica" = 1))
+}
+
+iris$Flower <- NULL
+```
+
+## methods 
+
+method                 | application 
+---------------------- | -----------
+ordinary least squares | regression in low dimensional settings 
+lasso                  | regression in high dimensional settings 
+support vector machine | classification 
+random forest          | regression and classification in high dimensional settings 
+neural network         | (same as random forest)
+
+
+### (insertion) cross validation 
+```{r warning = FALSE, message=FALSE}
+library(ggpubr)
+spans <- c(0.35, 0.8, 100)
+plots <- list()
+for(i in seq_along(spans)) {
+  p <- ggplot(iris, aes(x = Petal.Length, y = Petal.Width, col = Species)) + 
+    geom_jitter() +
+    stat_smooth(aes(group = Species), col = 1, se = F,
+                method = "loess",
+                span = spans[i])  
+ plots[[i]] <- p
+}
+
+ggarrange(plots[[1]], plots[[2]], plots[[3]],
+          ncol = 1, nrow = 3)
+```
+
+
+```{r}
+train <- sort(sample(seq_len(nrow(iris)), size = floor(0.5 * nrow(iris))))
+test <- setdiff(seq_len(nrow(iris)), train)
+X_train <- as.matrix(iris[train, 1:4])
+y <- string_to_numeric_fact(iris[, 5])
+y_train <- as.numeric(levels(y[train]))[y[train]]
+y_test <- as.numeric(levels(y[test]))[y[test]]
+X_test <- as.matrix(iris[test, 1:4])
+
+```
+
+### ordinary least squares 
+
+
+$$y \in \mathbb{R}^n \,,\, X \in \mathbb{R}^{n \times k} \\ \mathrm{b_{ols}^*} = (X^\top X)^{-1} X^\top y  = \underset{b \in \mathbb{R}^k}{\text{argmin}}\left\{||y - X b||_2^2 \right\}$$
+
+```{r}
+ols_y <- as.numeric(levels(y))[y]
+ols_model <- lm(Species ~ ., data = transform(iris, Species = ols_y))
+
+pred_ols <- as.numeric(predict(ols_model)[test])
+pred_ols_df <- pred_compare_df(seq_len(nrow(iris)), ols_y, predict(ols_model), "ols", T)
+ggplot(pred_ols_df, aes(x = id, y = value, col = method)) + 
+  geom_point()
+```
+
+
+
+### lasso 
+
+$$\mathrm{b_{lasso}^*} = \underset{b \in \mathbb{R}^k}{\text{argmin}}\left\{||y - X b||_2^2 +  \lambda ||b||_1 \right\}$$
+
+```{r warning = FALSE, message = FALSE}
+library(glmnet)
+lambda <- 10 ^ seq(10, -2, len = 100)
+
+lasso_model <- glmnet(x = X_train, y = y_train, alpha = 1, lambda = lambda)
+
+cv_lasso <- cv.glmnet(x = X_train, y = y_train, alpha = 1)
+
+pred_lasso <- as.numeric(predict(lasso_model, s = cv_lasso$lambda.1se, newx = X_test))
+
+pred_lasso_df <- pred_compare_df(test, y_test, pred_lasso, "lasso", T)
+ggplot(pred_lasso_df, aes(x = id, y = value, col = method)) + 
+  geom_point()
+```
+
+comparison of estimated beta vector (lasso vs ols) 
+
+```{r}
+coef(lasso_model, s = cv_lasso$lambda.1se)
+as.data.frame(coef(ols_model))
+```
+
+### support vector machine (svm) 
+```{r warning=FALSE, message=FALSE}
+library(e1071)
+
+svm_model <- e1071::svm(Species ~ ., data = iris)
+pred_svm <- as.numeric(string_to_numeric_fact(predict(svm_model)))
+table(predict(svm_model), iris$Species)
+pred_svm <- pred_svm[test] - 2
+
+plot(svm_model, data = iris, Petal.Width ~ Petal.Length,
+     slice = list(Sepal.Width = 3, Sepal.Length = 4), 
+     col = c("#f8766d", "#00ba38", "#619cff"), 
+     dataSymbol = 1, svSymbol = 3, symbolPalette = c("#8b0000", 1, "#003366"))
+```
+
+### random forest 
+
+```{r warning=FALSE, message=FALSE}
+library(randomForest)
+library(party)
+
+rf_tree <- randomForest::randomForest(Species ~., data = iris[train,], ntree = 100)
+
+pred_rf <- predict(rf_tree, newdata = iris[test, ])
+table(pred_rf, iris[test, ]$Species)
+pred_rf <- as.numeric(string_to_numeric_fact(pred_rf)) - 2
+
+
+rf_single_tree <- party::ctree(Species ~., data = iris)
+plot(rf_single_tree, type = "simple")
+```
+
+
+### (artificial) neural network 
+
+```{r echo=FALSE,warning=FALSE, message=FALSE}
+library(nnet)
+ideal <- class.ind(iris$Species)
+nn_model <- nnet(iris[train, -5], ideal[train, ], size = 5, softmax = T)
+pred_nn <- predict(nn_model, iris[test, -5], type = "class")
+
+## only relevant for downloading plotting function
+require(RCurl)
+root.url <- 'https://gist.githubusercontent.com/fawda123'
+raw.fun <- paste0(
+  root.url,
+  '/5086859/raw/cc1544804d5027d82b70e74b83b3941cd2184354/nnet_plot_fun.r'
+)
+script <- getURL(raw.fun, ssl.verifypeer = FALSE)
+eval(parse(text = script))
+rm('script','raw.fun')
+```
+
+```{r warning=FALSE, message=FALSE}
+table(pred_nn, iris[test, 5])
+pred_nn <- as.numeric(string_to_numeric_fact(pred_nn))
+plot(nn_model, rel.rsc = 10, alpha = 0.8,
+     pos.col = "black", neg.col = "#9bc2cf")
+
+plot(nn_model, rel.rsc = 25, alpha = 0.8, all.in = 'Sepal.Length', 
+     all.out = "setosa", pos.col = "black", neg.col = "#9bc2cf")
+```
+
+### summarized 
+
+```{r}
+final_df1 <- data.frame(id = test,
+                       ols = as.vector(pred_ols),
+                       lasso = pred_lasso,
+                       svm = pred_svm,
+                       rf = pred_rf,
+                       nnet = pred_nn)
+
+final_df2 <- gather(final_df1, method, value, -id)
+
+final_plot <- ggplot(final_df2, aes(x = id, y = value, col = method)) + 
+                geom_jitter(aes(shape = method), width = 0, height = 0.05,
+                            size = 3) 
+final_plot + 
+  geom_segment(aes(x = 0, y = -1, xend = 50, yend = -1), col = 1) +  
+  geom_segment(aes(x = 50, y = 0, xend = 100, yend = 0), col = 1) +
+  geom_segment(aes(x = 100, y = 1, xend = 150, yend = 1), col = 1) 
+```
+
+
+
+# notes on efficient programming practices 
+
+- [github](https://github.com/timmens)
+- [latex (overleaf)](https://www.overleaf.com/project)
+- terminal 
+- vim
+
+# shiny 
+```{r}
+shiny::shinyApp(
+  
+  ui = fluidPage(
+    selectInput("method", "method:",
+                choices = colnames(final_df1)[-1]),
+    plotOutput("method_plot")
+  ),
+  
+  server = function(input, output) {
+    output$method_plot = renderPlot({
+      colid = which(colnames(final_df1)[-1] == input$method)
+      colorcodes = c("#FFDB6D", "#C4961A", "#FC4E07", "#CC79A7", "#000000", "#56B4E9")
+      ggplot(gather(final_df1[, c("id", input$method)], method, value,
+                    -id), aes(x = id, y = value)) +
+        #geom_point(colour=colorcodes[colid]) + 
+        geom_jitter(colour=colorcodes[colid], size = 3, width = 0, height = 0.05) +
+        geom_segment(aes(x = 0, y = -1, xend = 50, yend = -1)) +  
+        geom_segment(aes(x = 50, y = 0, xend = 100, yend = 0)) +
+        geom_segment(aes(x = 100, y = 1, xend = 150, yend = 1)) 
+      
+    })
+  },
+  
+  options(list(height=500))
+)
+```
+
+
+# fancy looking reports 
+![source: www.bookdown.org](hex_markdown.png)
