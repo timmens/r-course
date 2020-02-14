@@ -23,7 +23,6 @@ The script can be found in the folder `script` and a nicely rendered version is 
 ### Lecture Notes
 
 All notes that were written during the live coding are available in the folder `lecture-notes`.
-You can find the exercises in the folder `exercises`.
 
 ### Exercises
 
