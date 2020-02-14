@@ -1,4 +1,4 @@
-# Outlook to 'Introduction to R' class (2019) 
+# Outlook to *Introduction to programming using R (2020 winter)*
 
 In this small outlook I will present a modern (*computer science*) approach to data analysis using contemporary software. 
 

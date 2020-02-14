@@ -16,14 +16,31 @@
 On this page we provide all materials for the *Introductory R Course*.
 The course starts on the 10.2.2020 (Monday) and goes until the 14.2.2020 (Friday).
 
-You will find the script in the folder `script` as well as a nicely rendered version here: [online script](https://htmlpreview.github.io/?https://github.com/timmens/r-course/blob/master/script/script.html).
-We will upload all files that are produced during the lectures in the folder `lecture-notes`.
+### Script
+
+The script can be found in the folder `script` and a nicely rendered version is available here: [online script](https://htmlpreview.github.io/?https://github.com/timmens/r-course/blob/master/script/script.html).
+
+### Lecture Notes
+
+All notes that were written during the live coding are available in the folder `lecture-notes`.
 You can find the exercises in the folder `exercises`.
+
+### Exercises
+
+Solutions to the exercises can be found in the folder `exercises`, in which we also store the data which is needed to solve the exercises. (As of right now we cannot upload the exercises due to copyright issues.)
+
+### Pizza
+
+In the folder `pizza` we include the collected data on preferences over pizza types and the corresponding r script to aggregate the preferences using [Borda count](https://en.wikipedia.org/wiki/Borda_count). (Which we do because on Friday we order pizza for everyone.)
+
+### Outlook
+
+On Friday I present on whats possible with R which I summarize in a small [outlook](https://htmlpreview.github.io/?https://github.com/timmens/r-course/blob/master/outlook/outlook.html).
 
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create.
+Contributions are what make the open source community such an amazing place to learn, inspire, and create.
 Any contributions you make are **greatly appreciated**, even if its just about a typo.
 What you need to do in this case:
 
