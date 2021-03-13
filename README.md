@@ -6,11 +6,11 @@
 ## Table of Contents
 
 * [About the course](#about-the-project)
+* [Changing the Script](#changing-the-script)
 * [Contributing](#contributing)
 * [License](#license)
 * [Contact](#contact)
 
-<!-- ABOUT THE COURSE -->
 ## About The Course
 
 On this page we provide all materials for the *Introductory R Course*.
@@ -27,16 +27,42 @@ All notes that were written during the live coding are available in the folder `
 ### Exercises
 
 Solutions to the exercises can be found in the folder `exercises`, in which we also store the data which is needed to solve the exercises. (As of right now we cannot upload the exercises due to copyright issues.)
+At the moment the exercise sheets themselves cannot be found online.
 
+<!-- 
 ### Pizza
 
 In the folder `pizza` we include the collected data on preferences over pizza types and the corresponding r script to aggregate the preferences using [Borda count](https://en.wikipedia.org/wiki/Borda_count). (Which we do because on Friday we order pizza for everyone.)
+-->
 
 ### Outlook
 
 On Friday I present on whats possible with R which I summarize in a small [outlook](https://htmlpreview.github.io/?https://github.com/timmens/r-course/blob/master/outlook/outlook.html).
 
-<!-- CONTRIBUTING -->
+
+## Changing the Script
+
+If you wish to change the script feel free to do so. The script is rendered from an
+r-markdown file which is found in ``script/script.Rmd``. Just open the file in RStudio
+and run the following commands in the console
+
+``R
+rmarkdown::render("path/to/script.Rmd", output_format="tufte_html")
+rmarkdown::render("path/to/script.Rmd", output_format="tufte_handout")
+``
+
+Hopefully RStudio will tell you which packages you need to install before you can run
+these commands; however, since there are a thousand things that can go wrong with the
+package versions or latex you might need to get your hands dirty on stackoverflow. Just
+as an example I had to reinstall some latex related packages (on my linux machien) with
+
+``zsh
+$ sudo apt-get install texlive-xetex texlive-extra-utils texlive-fonts-recommended
+``
+
+but for your system you might need to do something very different.
+
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create.
@@ -49,12 +75,10 @@ What you need to do in this case:
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-<!-- LICENSE -->
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-<!-- CONTACT -->
 ## Contact
 
 Tim Mensinger - tim.mensinger@uni-bonn.de

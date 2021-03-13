@@ -26,8 +26,6 @@ options(htmltools.dir.version = FALSE)
 *Lecturers:*
 
 - Tim Mensinger (tim.mensinger@uni-bonn.de)
-- Moritz Brinker (s3mobrin@uni-bonn.de)
-- Florian Schoner (florian.schoner@uni-bonn.de)
 
 \noindent
 *Timetable:*
@@ -384,7 +382,7 @@ X * X
 X %*% X
 ```
 
-(Some) useful functions:^[`t` computes the inverse of its argument, which can be either a matrix or a data frame. `diag` returns the diagonal entries of its argument. `solve` can be used to either solve a linear system of equations or compute the inverse of its argument: if we provide `solve` with one matrix (or data frame) then it returns the inverse; if we supply a matrix (or data frame) and a vector, `solve` returns the solution to the system of linear equations. That is, $\text{solve}(X) = X^{-1}$ and $\text{solve}(X, y) = b$ with $X b = y$ (if the system has a solution).]
+(Some) useful functions:^[`t` computes the transpose of its argument, which can be either a matrix or a data frame. `diag` returns the diagonal entries of its argument. `solve` can be used to either solve a linear system of equations or compute the inverse of its argument: if we provide `solve` with one matrix (or data frame) then it returns the inverse; if we supply a matrix (or data frame) and a vector, `solve` returns the solution to the system of linear equations. That is, $\text{solve}(X) = X^{-1}$ and $\text{solve}(X, y) = b$ with $X b = y$ (if the system has a solution).]
 ```{r}
 t(X)
 ```
@@ -739,7 +737,7 @@ As an example, let us look at the dataset that can be found in the GitHub repo o
 
 
 ```{r}
-dat <- read.table("../data/mtcars.txt", header = TRUE, sep = "")
+dat <- read.table("mtcars.txt", header = TRUE, sep = "")
 head(dat)
 ```
 In `R-Studio` you might want to use `View(dat)` to get an overview.
@@ -758,8 +756,8 @@ where `...` are the names of the objects to be saved.
 
 To save the object in our workspace to a .csv, we execute the following command.
 
-```{r}
-write.csv(dat, file = "../data/mtcars.csv")
+```{r eval=FALSE}
+write.csv(dat, file = "mtcars.csv")
 ```
 
 

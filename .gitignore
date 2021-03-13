@@ -20,3 +20,8 @@ exercises/exercise-sheets/
 data/mtcars.csv
 
 outlook/hadley_wickham.jpg
+
+script/script.aux
+script/script.bbl
+script/script.blg
+script/script.out
